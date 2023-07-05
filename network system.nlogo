@@ -15,9 +15,14 @@ globals
   roads                    ;; agentset containing the patches that are roads
 
   ;; length of residential area
-  min-xcor-residential     ;; minimum pxcor of Subdivision Road
-  max-xcor-residential     ;; maximum pxcor of Subdivision Road
-  ycor-residential         ;; pycor of Subdivision Road
+  top-min-xcor-residential     ;; minimum pxcor of Subdivision Road
+  top-max-xcor-residential     ;; maximum pxcor of Subdivision Road
+  top-ycor-residential         ;; pycor of Subdivision Road
+
+  ;; length of residential area
+  bot-min-xcor-residential     ;; minimum pxcor of Subdivision Road
+  bot-max-xcor-residential     ;; maximum pxcor of Subdivision Road
+  bot-ycor-residential         ;; pycor of Subdivision Road
 
   ;; suggestions
   suggestion-house
@@ -69,11 +74,10 @@ to setup
   ;; House patches can only be near Subdivision Drive.
   let house-candidates patches with [
     pcolor = 38 and any? neighbors with [ pcolor = white ] and
-    ( pycor = ycor-residential + 1 or pycor = ycor-residential - 1 ) and ( pxcor >= min-xcor-residential and pxcor <= max-xcor-residential )
-  ]
+    ( ( ( pycor = top-ycor-residential + 1 or pycor = top-ycor-residential - 1 or pycor = top-ycor-residential) and ( pxcor >= top-min-xcor-residential + 1 and pxcor <= top-max-xcor-residential + 1 ) ) or ( ( pycor = bot-ycor-residential + 1 or pycor = bot-ycor-residential - 1 or pycor = bot-ycor-residential) and ( pxcor >= bot-min-xcor-residential - 1 and pxcor <= bot-max-xcor-residential - 1) ) )   ]
   let work-candidates patches with [
     pcolor = 38 and any? neighbors with [ pcolor = white ] and
-    ( pycor > 0 or pxcor < -6 )
+    ( ( pycor >= -9 and pycor <= 9) or ( pxcor >= 18 and pxcor <= -18 ) )
   ]
   ask one-of intersections [ become-current ]
 
@@ -124,10 +128,15 @@ to setup-globals
   set phase 0
   set num-cars-stopped 0
 
-  ;; set coordinates for the Subdivision Road
-  set min-xcor-residential 0
-  set max-xcor-residential 16
-  set ycor-residential -8
+  ;; set coordinates for the Top Subdivision Road
+  set top-min-xcor-residential 11
+  set top-max-xcor-residential 16
+  set top-ycor-residential 16
+
+  ;; set coordinates for the Bottom Subdivision Road
+  set bot-min-xcor-residential -16
+  set bot-max-xcor-residential -10
+  set bot-ycor-residential -16
 
   ;; set suggested roads per selection
 ;  set suggestions-house table:make
@@ -177,27 +186,51 @@ to setup-patches
 
   ;; initialize the global variables that hold patch agentsets
   set roads patches with [
-    ;; left- and right-most border roads
-    pxcor = 18 or
-    pxcor = -18 or
+    ;; bottommost road
+    (pycor = -18 and pxcor <= 18 and pxcor >= 0) or
+
     ;; longest vertical road
-    pxcor = -6 or
-    ;; top- and bottom-most border roads
-    pycor = 18 or
-    pycor = -18 or
-    ;; middle avenue
-    pycor = 0 or
-    ;; road dividing the top half
-    pycor = 9 or
-    ;; residential road
-    ( pycor = ycor-residential and pxcor >= min-xcor-residential )
+    (pxcor = 0 and pycor <= 17 and pycor >= -17) or ;; Main Road
+
+    ;; long horizontal roads
+    (pycor = 8 and pxcor >= -17 and pxcor <= 17 ) or ;; Tingo Road
+    (pycor = 0 and pxcor <= 17 and pxcor >= -17) or ;; Uno Road
+
+    ;; long vertical roads on the right
+    (pxcor = 10 and pycor <= 8 and pycor >= -17) or ;; Saturn Street
+    (pxcor = 18 and pycor <= 8 and pycor >= -17) or ;; Bugoy Road
+    (pxcor = 5 and pycor <= 8  and pycor >= -8) or ;; Jupiter Street
+
+    ;; short road connecting two long vertical roads on the right
+    (pycor = -8 and pxcor >= 5 and pxcor <= 10 ) or
+
+    ;; long vertical roads on the left
+    (pxcor = -10 and pycor <= 17 and pycor >= -8) or ;; Tin Road
+    (pxcor = -18 and pycor <= 8  and pycor >= -8) or
+
+    ;; roads connecting the long roads on the left
+    (pycor = -8 and pxcor >= -17 and pxcor <= -10 ) or
+
+    ;; toppmost horizontal road
+    (pycor = 18 and pxcor <= 0 and pxcor >= -10) or
+
+    ;; roads connecting the subdivision road from the main road
+    (pycor = 16 and pxcor <= 10 and pxcor >= 1) or ;; top connector road
+    (pycor = -16 and pxcor <= 0 and pxcor >= -9) or ;; bot connector road
+
+    ;; top residential road
+    ( pycor = top-ycor-residential and pxcor >= top-min-xcor-residential and pxcor <= top-max-xcor-residential ) or
+
+    ;; bot residential road
+    ( pycor = bot-ycor-residential and pxcor >= bot-min-xcor-residential and pxcor <= bot-max-xcor-residential )
   ]
   set intersections roads with [
-    (pxcor = -6 and pycor = 0) or
-    (pxcor = -6 and pycor = 9) or
-    (pxcor = 18 and pycor = 0) or
-    (pxcor = 18 and pycor = 9) or
-    (pxcor = -6 and pycor = -18) ;;or
+    ;;(pxcor =  0 and pycor =  -17 ) or
+    (pxcor =  0 and pycor =  0 ) or
+    (pxcor =  -10 and pycor =  0 ) or
+    ;;(pxcor =  0 and pycor =  17 ) or
+    (pxcor =  18 and pycor =  0 ) or
+    (pxcor =  -10 and pycor =  8 ) ;;or
 ;    (pxcor = 18 and pycor = -8)
   ]
 
@@ -268,11 +301,12 @@ to go
     ;; House patches can only be near Subdivision Drive.
     let house-candidates patches with [
       pcolor = 38 and any? neighbors with [ pcolor = white ] and
-      ( pycor = ycor-residential + 1 or pycor = ycor-residential - 1 ) and ( pxcor >= min-xcor-residential and pxcor <= max-xcor-residential )
+      ( ( (pycor = top-ycor-residential + 1 or pycor = top-ycor-residential - 1 ) and ( pxcor >= top-min-xcor-residential and pxcor <= top-max-xcor-residential) ) or
+      ( ( pycor = bot-ycor-residential + 1 or pycor = bot-ycor-residential - 1 ) and ( pxcor >= bot-min-xcor-residential and pxcor <= bot-max-xcor-residential ) ) )
     ]
     let work-candidates patches with [
       pcolor = 38 and any? neighbors with [ pcolor = white ] and
-      ( pycor > 0 or pxcor < -6 )
+      ( pycor <= 9 and pxcor >= 6 )
     ]
 
     ;; Now create the cars and have each created car call the functions setup-cars and set-car-color
@@ -516,15 +550,15 @@ to-report next-patch
     ( not member? self [ path ] of myself )
   ]
   ;; If it is the first trip of the car and it is going to work, avoid entering the residential road
-  if goal = work and trips = 0 and ( [pycor] of patch-here <= ycor-residential + 1 and [pycor] of patch-here >= ycor-residential - 1 ) and [pxcor] of patch-here = 18 [
-    set choices choices with [ not ( pxcor >= min-xcor-residential and pxcor < max-xcor-residential + 2 ) ]
+  if goal = work and trips = 0 and ( ( [pycor] of patch-here <= top-ycor-residential + 1 and [pycor] of patch-here >= top-ycor-residential - 1 ) or ( [pycor] of patch-here <= bot-ycor-residential + 1 and [pycor] of patch-here >= bot-ycor-residential - 1 ) ) and [pxcor] of patch-here = 18 [
+    set choices choices with [ not ( ( pxcor >= top-min-xcor-residential and pxcor < top-max-xcor-residential + 2 ) and ( pxcor >= bot-min-xcor-residential and pxcor < bot-max-xcor-residential + 2 ) )]
   ]
   ;; If the car was spawned on the residential road and it is the first trip to work, exit to the main road
-  if goal = work and trips = 0 and ( [pycor] of patch-here = ycor-residential and ( [pxcor] of patch-here >= min-xcor-residential and [pxcor] of patch-here < max-xcor-residential + 2 ) ) [
+  if goal = work and trips = 0 and ( ( [pycor] of patch-here = top-ycor-residential and ( [pxcor] of patch-here >= top-min-xcor-residential and [pxcor] of patch-here < top-max-xcor-residential + 2 ) ) or ( [pycor] of patch-here = bot-ycor-residential and ( [pxcor] of patch-here >= bot-min-xcor-residential and [pxcor] of patch-here < bot-max-xcor-residential + 2 ) ) ) [
     set choices choices with [ pxcor > [[ pxcor ] of patch-here] of myself ]
   ]
   ;; If the car has just gone home and will go back to work, exit to the main road.
-  if goal = work and trips > 0 and ( ( [pycor] of patch-here <= ycor-residential + 1 and [pycor] of patch-here >= ycor-residential - 1 ) and ( [pxcor] of patch-here >= min-xcor-residential and [pxcor] of patch-here < max-xcor-residential + 2 ) ) [
+  if goal = work and trips > 0 and ( ( ( [pycor] of patch-here <= top-ycor-residential + 1 and [pycor] of patch-here >= top-ycor-residential - 1 ) and ( [pxcor] of patch-here >= top-min-xcor-residential and [pxcor] of patch-here < top-max-xcor-residential + 2 ) ) or ( ( [pycor] of patch-here <= bot-ycor-residential + 1 and [pycor] of patch-here >= bot-ycor-residential - 1 ) and ( [pxcor] of patch-here >= bot-min-xcor-residential and [pxcor] of patch-here < bot-max-xcor-residential - 2 ) ) ) [
     set choices choices with [ pxcor > [[ pxcor ] of patch-here] of myself ]
   ]
   ;; If the car has already chosen a direction, continue towards that direction.
@@ -705,7 +739,7 @@ num-cars
 num-cars
 1
 400
-98.0
+105.0
 1
 1
 NIL
@@ -798,7 +832,7 @@ ticks-per-cycle
 ticks-per-cycle
 1
 100
-39.0
+100.0
 1
 1
 NIL
@@ -927,61 +961,11 @@ max-round-trips
 max-round-trips
 1
 10
-3.0
+5.0
 1
 1
 NIL
 HORIZONTAL
-
-TEXTBOX
-515
-250
-680
-268
-Subdivision Drive
-9
-3.0
-1
-
-TEXTBOX
-493
-340
-688
-358
-Circumferential Road South
-9
-3.0
-1
-
-TEXTBOX
-438
-20
-683
-38
-Circumferential Road North
-9
-3.0
-1
-
-TEXTBOX
-518
-180
-688
-198
-Rand Street
-9
-2.0
-1
-
-TEXTBOX
-503
-100
-693
-118
-Wilensky Street
-9
-3.0
-1
 
 SLIDER
 165
@@ -992,7 +976,7 @@ assisted
 assisted
 0
 1
-0.8
+0.0
 .1
 1
 NIL
@@ -1034,7 +1018,7 @@ CHOOSER
 app-suggestion
 app-suggestion
 "Rand Street" "Wilensky Street" "Circumferential Road North" "Circumferential Road South"
-0
+2
 
 MONITOR
 885
@@ -1108,7 +1092,7 @@ PLOT
 325
 990
 510
-Rand Street
+Main Road
 Number of cars
 Time
 0.0
@@ -1119,25 +1103,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -5825686 true "" "plot count turtles with [ [pycor] of patch-here = 0 and [pxcor] of patch-here < 18 and [pxcor] of patch-here > -6 ]"
-
-PLOT
-990
-325
-1315
-510
-Wilensky Street
-Number of cars
-Time
-0.0
-10.0
-0.0
-10.0
-true
-false
-"" ""
-PENS
-"default" 1.0 0 -2064490 true "" "plot count turtles with [ [pycor] of patch-here = 9 and [pxcor] of patch-here < 18 and [pxcor] of patch-here > -6 ]"
+"default" 1.0 0 -5825686 true "" "plot count turtles with [ [pxcor] of patch-here = 0 ]"
 
 TEXTBOX
 670
@@ -1151,28 +1117,10 @@ Car volume per street
 
 PLOT
 990
+325
+1310
 510
-1315
-695
-Circumferential Road North
-NIL
-NIL
-0.0
-10.0
-0.0
-10.0
-true
-false
-"" ""
-PENS
-"default" 1.0 0 -5825686 true "" "plot count turtles with [ [pycor] of patch-here = 18 and [pxcor] of patch-here < 18 and [pxcor] of patch-here > -6 ]"
-
-PLOT
-670
-510
-990
-695
-Circumferential Road South
+Uno Road
 Number of cars
 Time
 0.0
@@ -1183,7 +1131,167 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -2064490 true "" "plot count turtles with [ [pycor] of patch-here = -18 and [pxcor] of patch-here < 18 and [pxcor] of patch-here > -6 ]"
+"default" 1.0 0 -2064490 true "" "plot count turtles with [ [pycor] of patch-here = 0 ]"
+
+TEXTBOX
+435
+280
+585
+298
+Main Road
+10
+0.0
+1
+
+TEXTBOX
+425
+180
+575
+198
+Uno Road
+10
+0.0
+1
+
+TEXTBOX
+590
+110
+740
+128
+Tingo Road
+9
+0.0
+1
+
+PLOT
+670
+510
+990
+695
+Tingo Road
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot count turtles with [ [pycor] of patch-here = 8 ]"
+
+TEXTBOX
+500
+205
+550
+230
+Jupiter Street\n
+10
+0.0
+1
+
+TEXTBOX
+590
+210
+640
+240
+Saturn Street
+10
+0.0
+1
+
+PLOT
+990
+510
+1310
+695
+Saturn Street
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "plot count turtles with [ [pxcor] of patch-here = 10 and [pycor] of patch-here >= -18 and [pycor] of patch-here <= 8 ]" "plot count turtles with [ [pxcor] of patch-here = 10 and [pycor] of patch-here >= -18 and [pycor] of patch-here <= 8 ]"
+
+PLOT
+1310
+325
+1630
+510
+Tin Road
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot count turtles with [ [pxcor] of patch-here = -10 and [pycor] of patch-here >= -8 and [pycor] of patch-here <= 18 ]"
+
+TEXTBOX
+350
+65
+395
+83
+Tin Road
+10
+0.0
+1
+
+TEXTBOX
+615
+295
+650
+320
+Bugoy Road\n
+10
+0.0
+1
+
+PLOT
+1310
+510
+1630
+695
+Bugoy Road
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot count turtles with [ [pxcor] of patch-here = 18 and [pycor] of patch-here >= -18 and [pycor] of patch-here <= 8 ]"
+
+PLOT
+670
+695
+990
+880
+Jupiter Street
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot count turtles with [ [pxcor] of patch-here = 5 ]"
 
 @#$#@#$#@
 ## ACKNOWLEDGMENT
@@ -1526,7 +1634,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.0
+NetLogo 6.3.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
