@@ -74,7 +74,8 @@ to setup
   ;; House patches can only be near Subdivision Drive.
   let house-candidates patches with [
     pcolor = 38 and any? neighbors with [ pcolor = white ] and
-    ( ( ( pycor = top-ycor-residential + 1 or pycor = top-ycor-residential - 1 or pycor = top-ycor-residential) and ( pxcor >= top-min-xcor-residential + 1 and pxcor <= top-max-xcor-residential + 1 ) ) or ( ( pycor = bot-ycor-residential + 1 or pycor = bot-ycor-residential - 1 or pycor = bot-ycor-residential) and ( pxcor >= bot-min-xcor-residential - 1 and pxcor <= bot-max-xcor-residential - 1) ) )   ]
+    ( ( ( pycor = top-ycor-residential + 1 or pycor = top-ycor-residential - 1 ) and ( pxcor >= top-min-xcor-residential + 1 and pxcor <= top-max-xcor-residential ) ) or
+      ( ( pycor = bot-ycor-residential + 1 or pycor = bot-ycor-residential - 1 ) and ( pxcor >= bot-min-xcor-residential     and pxcor <= bot-max-xcor-residential - 1) ) )   ]
   let work-candidates patches with [
     pcolor = 38 and any? neighbors with [ pcolor = white ] and
     ( ( pycor >= -9 and pycor <= 9) or ( pxcor >= 18 and pxcor <= -18 ) )
@@ -186,27 +187,29 @@ to setup-patches
 
   ;; initialize the global variables that hold patch agentsets
   set roads patches with [
-    ;; bottommost road
-    (pycor = -18 and pxcor <= 18 and pxcor >= 0) or
-
+    ;; VERTICAL ROADS
     ;; longest vertical road
     (pxcor = 0 and pycor <= 17 and pycor >= -17) or ;; Main Road
-
-    ;; long horizontal roads
-    (pycor = 8 and pxcor >= -17 and pxcor <= 17 ) or ;; Tingo Road
-    (pycor = 0 and pxcor <= 17 and pxcor >= -17) or ;; Uno Road
 
     ;; long vertical roads on the right
     (pxcor = 10 and pycor <= 8 and pycor >= -17) or ;; Saturn Street
     (pxcor = 18 and pycor <= 8 and pycor >= -17) or ;; Bugoy Road
     (pxcor = 5 and pycor <= 8  and pycor >= -8) or ;; Jupiter Street
 
-    ;; short road connecting two long vertical roads on the right
-    (pycor = -8 and pxcor >= 5 and pxcor <= 10 ) or
-
     ;; long vertical roads on the left
     (pxcor = -10 and pycor <= 17 and pycor >= -8) or ;; Tin Road
     (pxcor = -18 and pycor <= 8  and pycor >= -8) or
+
+    ;; HORIZONTAL ROADS
+    ;; bottommost road
+    (pycor = -18 and pxcor <= 18 and pxcor >= 0) or
+
+    ;; long horizontal roads
+    (pycor = 8 and pxcor >= -17 and pxcor <= 17 ) or ;; Tingo Road
+    (pycor = 0 and pxcor <= 17 and pxcor >= -17) or ;; Uno Road
+
+    ;; short road connecting two long vertical roads on the right
+    (pycor = -8 and pxcor >= 5 and pxcor <= 10 ) or
 
     ;; roads connecting the long roads on the left
     (pycor = -8 and pxcor >= -17 and pxcor <= -10 ) or
@@ -267,7 +270,18 @@ to setup-cars  ;; turtle procedure
       [ set up-car? false ]
   ]
   [ ; if the turtle is on a vertical road (rather than a horizontal one)
-    ifelse ( pxcor = -6 or pxcor = 18 or pxcor = -18 )
+    ifelse
+    ;; longest vertical road
+    ((pxcor = 0 and pycor <= 17 and pycor >= -17) or ;; Main Road
+
+    ;; long vertical roads on the right
+    (pxcor = 10 and pycor <= 8 and pycor >= -17) or ;; Saturn Street
+    (pxcor = 18 and pycor <= 8 and pycor >= -17) or ;; Bugoy Road
+    (pxcor = 5 and pycor <= 8  and pycor >= -8) or ;; Jupiter Street
+
+    ;; long vertical roads on the left
+    (pxcor = -10 and pycor <= 17 and pycor >= -8) or ;; Tin Road
+    (pxcor = -18 and pycor <= 8  and pycor >= -8))
       [ set up-car? true ]
       [ set up-car? false ]
   ]
@@ -306,7 +320,7 @@ to go
     ]
     let work-candidates patches with [
       pcolor = 38 and any? neighbors with [ pcolor = white ] and
-      ( pycor <= 9 and pxcor >= 6 )
+      ( ( pycor >= -9 and pycor <= 9) or ( pxcor >= 18 and pxcor <= -18 ) )
     ]
 
     ;; Now create the cars and have each created car call the functions setup-cars and set-car-color
@@ -551,16 +565,27 @@ to-report next-patch
   ]
   ;; If it is the first trip of the car and it is going to work, avoid entering the residential road
   if goal = work and trips = 0 and ( ( [pycor] of patch-here <= top-ycor-residential + 1 and [pycor] of patch-here >= top-ycor-residential - 1 ) or ( [pycor] of patch-here <= bot-ycor-residential + 1 and [pycor] of patch-here >= bot-ycor-residential - 1 ) ) and [pxcor] of patch-here = 18 [
-    set choices choices with [ not ( ( pxcor >= top-min-xcor-residential and pxcor < top-max-xcor-residential + 2 ) and ( pxcor >= bot-min-xcor-residential and pxcor < bot-max-xcor-residential + 2 ) )]
+    set choices choices with [ not ( ( pxcor >= 1 and pxcor <= top-max-xcor-residential and pycor = top-ycor-residential ) or (  pxcor >= bot-min-xcor-residential and pxcor <= -1 and pycor = bot-ycor-residential) )]
   ]
-  ;; If the car was spawned on the residential road and it is the first trip to work, exit to the main road
-  if goal = work and trips = 0 and ( ( [pycor] of patch-here = top-ycor-residential and ( [pxcor] of patch-here >= top-min-xcor-residential and [pxcor] of patch-here < top-max-xcor-residential + 2 ) ) or ( [pycor] of patch-here = bot-ycor-residential and ( [pxcor] of patch-here >= bot-min-xcor-residential and [pxcor] of patch-here < bot-max-xcor-residential + 2 ) ) ) [
-    set choices choices with [ pxcor > [[ pxcor ] of patch-here] of myself ]
+  ;; If the car was spawned on the TOP residential road and it is the first trip to work, exit to the main road
+  if goal = work and trips = 0 and ( ( [pycor] of patch-here = top-ycor-residential and ( [pxcor] of patch-here >= 1 and [pxcor] of patch-here <= top-max-xcor-residential ) ) )[
+    set choices choices with [ pxcor < [[ pxcor ] of patch-here] of myself ]
   ]
-  ;; If the car has just gone home and will go back to work, exit to the main road.
-  if goal = work and trips > 0 and ( ( ( [pycor] of patch-here <= top-ycor-residential + 1 and [pycor] of patch-here >= top-ycor-residential - 1 ) and ( [pxcor] of patch-here >= top-min-xcor-residential and [pxcor] of patch-here < top-max-xcor-residential + 2 ) ) or ( ( [pycor] of patch-here <= bot-ycor-residential + 1 and [pycor] of patch-here >= bot-ycor-residential - 1 ) and ( [pxcor] of patch-here >= bot-min-xcor-residential and [pxcor] of patch-here < bot-max-xcor-residential - 2 ) ) ) [
-    set choices choices with [ pxcor > [[ pxcor ] of patch-here] of myself ]
+  ;; If the car was spawned on the BOTTOM residential road and it is the first trip to work, exit to the main road
+  if goal = work and trips = 0 and ( ([pycor] of patch-here = bot-ycor-residential and ( [pxcor] of patch-here >= bot-min-xcor-residential and [pxcor] of patch-here <= -1 ) ) )[
+
+    set choices choices with [ pxcor > [[pxcor] of patch-here] of myself ]
   ]
+  ;; If the car has just gone home and will go back to work, exit to the main road. for TOP SUBD. ROAD
+  if goal = work and trips > 0 and ( [pycor] of patch-here <= top-ycor-residential + 1 and [pycor] of patch-here >= top-ycor-residential - 1 ) and ( [pxcor] of patch-here >= 1 and [pxcor] of patch-here <= top-max-xcor-residential  )   [
+    set choices choices with [ pxcor <= [[pxcor] of patch-here] of myself ]
+  ]
+  ;; If the car has just gone home and will go back to work, exit to the main road. for BOTTOM SUBD. ROAD
+  if goal = work and trips > 0 and ( [pycor] of patch-here <= bot-ycor-residential + 1 and [pycor] of patch-here >= bot-ycor-residential - 1 ) and ( [pxcor] of patch-here >= bot-min-xcor-residential and [pxcor] of patch-here <= -1 ) [
+    set choices choices with [ pxcor >= [[pxcor] of patch-here] of myself ]
+  ]
+
+
   ;; If the car has already chosen a direction, continue towards that direction.
   ;; This fixes the jittering behavior in the original model when neighbor patches are
   ;; equally near the goal.
@@ -739,7 +764,7 @@ num-cars
 num-cars
 1
 400
-105.0
+100.0
 1
 1
 NIL
@@ -961,7 +986,7 @@ max-round-trips
 max-round-trips
 1
 10
-5.0
+10.0
 1
 1
 NIL
@@ -1018,7 +1043,7 @@ CHOOSER
 app-suggestion
 app-suggestion
 "Rand Street" "Wilensky Street" "Circumferential Road North" "Circumferential Road South"
-2
+0
 
 MONITOR
 885
