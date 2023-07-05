@@ -153,7 +153,8 @@ to setup-globals
 ;  table:put suggestions-house "Circumferential Road South" patch 18 -18
 
 
-  ;; Upper residential
+
+  ;;upper residential
   if app-suggestion = "Main Road" [
     set suggestion-house patch 0 4
     set suggestion-work patch 0 4
@@ -183,7 +184,7 @@ to setup-globals
     set suggestion-work patch 18 4
   ]
 
-  ;; Lower residential
+  ;;lower residential
   if app-suggestion = "Main Road" [
     set suggestion-house patch 0 0
     set suggestion-work patch 0 0
