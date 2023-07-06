@@ -1538,24 +1538,6 @@ OUTPUT
 10
 
 PLOT
-165
-515
-590
-755
-Genocide Watch
-Time
-Number of Dead Cars
-0.0
-10.0
-0.0
-10.0
-true
-false
-"" ""
-PENS
-"pen-1" 1.0 0 -5298144 true "" "plot (num-cars - count turtles)"
-
-PLOT
 1230
 485
 1510
