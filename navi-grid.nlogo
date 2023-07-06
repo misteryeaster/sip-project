@@ -489,7 +489,7 @@ to set-car-accel
     set accel-mult daanan-cap
   ]
 
-  ask turtles with [pycor = -18 and pxcor <= 18 and pxcor >= 0 = 0][
+  ask turtles with [pycor = -18 and pxcor <= 18 and pxcor >= 0][
     set accel-mult kalsada-cap
   ]
 
@@ -603,6 +603,8 @@ to speed-up  ;; turtle procedure
   ifelse speed > speed-limit
     [ set speed speed-limit ]
     [ set speed speed + (acceleration * accel-mult) ]
+  if speed < 0
+    [ set speed 0 ]
 end
 
 ;; set the color of the car to a different color based on how fast the car is moving
