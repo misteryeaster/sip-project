@@ -417,7 +417,14 @@ to go
   ;; and set the color of the cars to an appropriate color based on their speed
   ask turtles [
     carefully [
-      face next-patch ;; car heads towards its goal
+      let target next-patch
+      while [target = nobody] [
+        set target one-of neighbors
+      ]
+      if target != nobody [
+        face target
+      ]
+      ;;face next-patch ;; car heads towards its goal
       ask house [ if pcolor != yellow [ set pcolor yellow ] ] ;; color the house patch yellow
       ask work [ if pcolor != orange [ set pcolor orange ] ] ;; color the work patch orange
       set-car-speed
@@ -926,7 +933,7 @@ num-cars
 num-cars
 1
 400
-100.0
+102.0
 1
 1
 NIL
@@ -1019,7 +1026,7 @@ ticks-per-cycle
 ticks-per-cycle
 1
 100
-100.0
+99.0
 1
 1
 NIL
@@ -1148,7 +1155,7 @@ max-round-trips
 max-round-trips
 1
 10
-10.0
+1.0
 1
 1
 NIL
@@ -1163,7 +1170,7 @@ assisted
 assisted
 0
 1
-0.0
+1.0
 .1
 1
 NIL
@@ -1205,7 +1212,7 @@ CHOOSER
 app-suggestion
 app-suggestion
 "Main Road" "Uno Road" "Jupiter Street" "Saturn Street" "Bugoy Road" "Tingo Road" "Tin Road"
-4
+3
 
 MONITOR
 885
