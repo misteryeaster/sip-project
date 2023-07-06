@@ -2,6 +2,8 @@ extensions [array table]
 
 globals
 [
+  death-count
+
   grid-x-inc               ;; the amount of patches in between two roads in the x direction
   grid-y-inc               ;; the amount of patches in between two roads in the y direction
   acceleration             ;; the constant that controls how much a car speeds up or slows down by if
@@ -443,6 +445,7 @@ to go
     if (trips mod 2 = 0) and (trips / 2 = max-round-trips) [
       ask house [ set pcolor brown + 3 ] ;; color patch back to brown
       ask work [ set pcolor brown + 3 ]  ;; color patch back to brown
+      set death-count death-count + 1
       die
     ]
   ]
@@ -1157,7 +1160,7 @@ max-round-trips
 max-round-trips
 1
 10
-10.0
+1.0
 1
 1
 NIL
@@ -1635,6 +1638,24 @@ false
 "" ""
 PENS
 "default" 1.0 0 -8275240 true "" "plot count turtles with [ [pycor] of patch-here = 18 ]"
+
+PLOT
+230
+510
+445
+655
+Number of Finished Cars
+Time
+Finished Cars
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -8330359 true "" "plot death-count"
 
 @#$#@#$#@
 ## ACKNOWLEDGMENT
