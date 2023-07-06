@@ -1205,7 +1205,7 @@ CHOOSER
 app-suggestion
 app-suggestion
 "Main Road" "Uno Road" "Jupiter Street" "Saturn Street" "Bugoy Road" "Tingo Road" "Tin Road"
-0
+4
 
 MONITOR
 885
@@ -1277,8 +1277,8 @@ Average Maximum Travel Times
 PLOT
 670
 325
-990
-510
+950
+485
 Main Road
 Time
 Number of cars
@@ -1303,10 +1303,10 @@ Car volume per street
 1
 
 PLOT
-990
+950
 325
-1310
-510
+1230
+485
 Uno Road
 Time
 Number of cars
@@ -1318,7 +1318,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -2064490 true "" "plot count turtles with [ [pycor] of patch-here = 0 ]"
+"default" 1.0 0 -4699768 true "" "plot count turtles with [ [pycor] of patch-here = 0 ]"
 
 TEXTBOX
 435
@@ -1352,9 +1352,9 @@ Tingo Road
 
 PLOT
 670
-510
-990
-695
+485
+950
+645
 Tingo Road
 Time
 Number of cars
@@ -1366,7 +1366,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot count turtles with [ [pycor] of patch-here = 8 ]"
+"default" 1.0 0 -8630108 true "" "plot count turtles with [ [pycor] of patch-here = 8 ]"
 
 TEXTBOX
 500
@@ -1389,10 +1389,10 @@ Saturn Street
 1
 
 PLOT
-990
-510
-1310
-695
+950
+485
+1230
+645
 Saturn Street
 Time
 Number of cars
@@ -1404,13 +1404,13 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "plot count turtles with [ [pxcor] of patch-here = 10 and [pycor] of patch-here >= -18 and [pycor] of patch-here <= 8 ]" "plot count turtles with [ [pxcor] of patch-here = 10 and [pycor] of patch-here >= -18 and [pycor] of patch-here <= 8 ]"
+"default" 1.0 0 -6917194 true "plot count turtles with [ [pxcor] of patch-here = 10 and [pycor] of patch-here >= -18 and [pycor] of patch-here <= 8 ]" "plot count turtles with [ [pxcor] of patch-here = 10 and [pycor] of patch-here >= -18 and [pycor] of patch-here <= 8 ]"
 
 PLOT
-1310
+1230
 325
-1630
-510
+1510
+485
 Tin Road
 Time
 Number of cars
@@ -1422,7 +1422,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot count turtles with [ [pxcor] of patch-here = -10 and [pycor] of patch-here >= -8 and [pycor] of patch-here <= 18 ]"
+"default" 1.0 0 -3508570 true "" "plot count turtles with [ [pxcor] of patch-here = -10 and [pycor] of patch-here >= -8 and [pycor] of patch-here <= 18 ]"
 
 TEXTBOX
 350
@@ -1445,10 +1445,10 @@ Bugoy Road\n
 1
 
 PLOT
-1310
-510
-1630
-695
+950
+645
+1230
+805
 Bugoy Road
 Time
 Number of Cars
@@ -1460,13 +1460,13 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot count turtles with [ [pxcor] of patch-here = 18 and [pycor] of patch-here >= -18 and [pycor] of patch-here <= 8 ]"
+"default" 1.0 0 -10649926 true "" "plot count turtles with [ [pxcor] of patch-here = 18 and [pycor] of patch-here >= -18 and [pycor] of patch-here <= 8 ]"
 
 PLOT
 670
-695
-990
-880
+645
+950
+805
 Jupiter Street
 Time
 Number of cars
@@ -1478,7 +1478,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot count turtles with [ [pxcor] of patch-here = 5 ]"
+"default" 1.0 0 -13345367 true "" "plot count turtles with [ [pxcor] of patch-here = 5 ]"
 
 TEXTBOX
 315
@@ -1525,7 +1525,7 @@ TEXTBOX
 265
 680
 283
-I'm a road
+You're Road
 10
 0.0
 1
@@ -1536,6 +1536,114 @@ OUTPUT
 1290
 94
 10
+
+PLOT
+165
+515
+590
+755
+Genocide Watch
+Time
+Number of Dead Cars
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"pen-1" 1.0 0 -5298144 true "" "plot (num-cars - count turtles)"
+
+PLOT
+1230
+485
+1510
+645
+Road Street
+Time
+Number of Cars
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -5204280 true "" "plot count turtles with [ [pxcor] of patch-here = -18 ]"
+
+PLOT
+1230
+645
+1510
+805
+Daanan Avenue
+Time
+Number of Cars
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -8020277 true "" "plot count turtles with [ [pycor] of patch-here = -8 and [pxcor] of patch-here >= -17 and [pxcor] of patch-here <= -10 ]"
+
+PLOT
+670
+805
+950
+965
+You're Road
+Time
+Number of Cars
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -13791810 true "" "plot count turtles with [ [pycor] of patch-here = -8 and pxcor >= 5 and pxcor <= 10 ]"
+
+PLOT
+950
+805
+1230
+965
+Kalsada Road
+Time
+Number of Cars
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -11033397 true "" "plot count turtles with [ [pycor] of patch-here = -18 ]"
+
+PLOT
+1230
+805
+1510
+965
+Rocky Road
+Time
+Number of Cars
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -8275240 true "" "plot count turtles with [ [pycor] of patch-here = 18 ]"
 
 @#$#@#$#@
 ## ACKNOWLEDGMENT
