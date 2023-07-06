@@ -885,9 +885,7 @@ num-cars
 num-cars
 1
 400
-
 100.0
-
 1
 1
 NIL
