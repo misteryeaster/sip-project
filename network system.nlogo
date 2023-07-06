@@ -417,9 +417,18 @@ to go
 
   ;; set the cars’ speed, move them forward their speed, record data for plotting,
   ;; and set the color of the cars to an appropriate color based on their speed
+
   ask turtles [
+
     carefully [
-      face next-patch ;; car heads towards its goal
+      let target next-patch
+      while [target = nobody] [
+        set path no-patches
+        set target one-of neighbors with [pcolor = white]
+      ]
+      if target != nobody [
+        face target
+      ] ;; car heads towards its goal
       ask house [ if pcolor != yellow [ set pcolor yellow ] ] ;; color the house patch yellow
       ask work [ if pcolor != orange [ set pcolor orange ] ] ;; color the work patch orange
       set-car-speed
@@ -754,18 +763,18 @@ to-report next-patch
   ;; If the car has already chosen a direction, continue towards that direction.
   ;; This fixes the jittering behavior in the original model when neighbor patches are
   ;; equally near the goal.
-  ;;if count choices = 2 and heading = 90 [
-    ;;set choices choices with [ pxcor > [[ pxcor ] of patch-here] of myself ]
-  ;;]
-  ;;if count choices = 2 and heading = 270 [
-    ;;set choices choices with [ pxcor < [[ pxcor ] of patch-here] of myself ]
-  ;;]
-  ;;if count choices = 2 and heading = 0 [
-    ;;set choices choices with [ pycor > [[ pycor ] of patch-here] of myself ]
-  ;;]
-  ;;if count choices = 2 and heading = 180 [
-    ;;set choices choices with [ pycor < [[ pycor ] of patch-here] of myself ]
-  ;;]
+  if count choices = 2 and heading = 90 [
+    set choices choices with [ pxcor > [[ pxcor ] of patch-here] of myself ]
+  ]
+  if count choices = 2 and heading = 270 [
+    set choices choices with [ pxcor < [[ pxcor ] of patch-here] of myself ]
+  ]
+  if count choices = 2 and heading = 0 [
+    set choices choices with [ pycor > [[ pycor ] of patch-here] of myself ]
+  ]
+  if count choices = 2 and heading = 180 [
+    set choices choices with [ pycor < [[ pycor ] of patch-here] of myself ]
+  ]
 
   ifelse assisted? [
     ifelse done-with-suggest? [
@@ -1166,7 +1175,7 @@ assisted
 assisted
 0
 1
-0.1
+0.6
 .1
 1
 NIL
@@ -1208,7 +1217,7 @@ CHOOSER
 app-suggestion
 app-suggestion
 "Main Road" "Uno Road" "Jupiter Street" "Saturn Street" "Bugoy Road" "Tingo Road" "Tin Road"
-4
+0
 
 MONITOR
 885
