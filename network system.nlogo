@@ -27,6 +27,22 @@ globals
   ;; suggestions
   suggestion-house
   suggestion-work
+
+  ;; road capacities
+  main-cap
+  tin-cap
+  road-cap
+
+  jupiter-cap
+  saturn-cap
+  bugoy-cap
+
+  uno-cap
+  tingo-cap
+  rocky-cap
+  i'm-cap
+  daanan-cap
+  kalsada-cap
 ]
 
 turtles-own
@@ -43,6 +59,8 @@ turtles-own
   max-travel-time     ;; longest travel time recorded
   assisted?           ;; true if car driver is assisted by a navigation app
   done-with-suggest?  ;; true if car has been to the road indicated by app-suggestion
+
+  accel-mult          ;; acceleration multiplier that slows down cars on busy roads
 ]
 
 patches-own
@@ -152,65 +170,21 @@ to setup-globals
 ;  table:put suggestions-house "Circumferential Road North" patch 18 18
 ;  table:put suggestions-house "Circumferential Road South" patch 18 -18
 
-
-  ;; Upper residential
-  if app-suggestion = "Main Road" [
-    set suggestion-house patch 0 4
-    set suggestion-work patch 0 4
+  if app-suggestion = "Rand Street" [
+    set suggestion-house patch 5 0 ;;-5 0
+    set suggestion-work patch 5 0 ;;17 0
   ]
-  if app-suggestion = "Uno Road" [
-    set suggestion-house patch -4 0
-    set suggestion-work patch -4 0
+  if app-suggestion = "Wilensky Street" [
+    set suggestion-house patch 5 9 ;;-5 9
+    set suggestion-work patch 5 9 ;;17 9
   ]
-  if app-suggestion = "Jupiter Street" [
-    set suggestion-house patch 5 4
-    set suggestion-work patch 5 3
+  if app-suggestion = "Circumferential Road North" [
+    set suggestion-house patch -5 18
+    set suggestion-work patch 17 18
   ]
-  if app-suggestion = "Saturn Street" [
-    set suggestion-house patch 10 4
-    set suggestion-work patch 10 3
-  ]
-  if app-suggestion = "Tingo Road" [
-    set suggestion-house patch -4 8
-    set suggestion-work patch -4 8
-  ]
-  if app-suggestion = "Tin Road" [
-    set suggestion-house patch -10 12
-    set suggestion-work patch -10 12
-  ]
-  if app-suggestion = "Bugoy Road" [
-    set suggestion-house patch 18 4
-    set suggestion-work patch 18 4
-  ]
-
-  ;; Lower residential
-  if app-suggestion = "Main Road" [
-    set suggestion-house patch 0 0
-    set suggestion-work patch 0 0
-  ]
-  if app-suggestion = "Uno Road" [
-    set suggestion-house patch -10 0
-    set suggestion-work patch -10 0
-  ]
-  if app-suggestion = "Jupiter Street" [
-    set suggestion-house patch 5 1
-    set suggestion-work patch 5 -1
-  ]
-  if app-suggestion = "Saturn Street" [
-    set suggestion-house patch 10 -1
-    set suggestion-work patch 10 1
-  ]
-  if app-suggestion = "Tingo Road" [
-    set suggestion-house patch 10 8
-    set suggestion-work patch 10 8
-  ]
-  if app-suggestion = "Tin Road" [
-    set suggestion-house patch -10 4
-    set suggestion-work patch -10 4
-  ]
-  if app-suggestion = "Bugoy Road" [
-    set suggestion-house patch 18 -16
-    set suggestion-work patch 18 -16
+  if app-suggestion = "Circumferential Road South" [
+    set suggestion-house patch -5 -18
+    set suggestion-work patch 17 -18
   ]
 
   ;; don't make acceleration 0.1 since we could get a rounding error and end up on a patch boundary
@@ -353,6 +327,9 @@ to go
   set-signals
   set num-cars-stopped 0
 
+  check-road-capacities
+  set-car-accel
+
   if count turtles < num-cars [
     ;; Make an agentset of all patches where there can be a house or road
     ;; those patches with the background color shade of brown and next to a road
@@ -422,6 +399,102 @@ to go
   tick
 
 end
+
+to check-road-capacities
+  ;;straight down roads
+  let main count turtles-on patches with [pxcor = 0]
+
+  let tin count turtles-on patches with [pxcor = -10 and pycor <= 17 and pycor >= -8]
+  let road count turtles-on patches with [pxcor = -18 and pycor <= 8  and pycor >= -8]
+
+  let jupiter count turtles-on patches with [pxcor = 10 and pycor <= 8 and pycor >= -17]
+  let saturn count turtles-on patches with [pxcor = 18 and pycor <= 8 and pycor >= -17]
+  let bugoy count turtles-on patches with [pxcor = 5 and pycor <= 8  and pycor >= -8]
+
+
+  ;; straight across roads
+  let uno count turtles-on patches with [pycor = 0 and pxcor <= 17 and pxcor >= -17]
+
+  let tingo count turtles-on patches with [pycor = 8 and pxcor >= -17 and pxcor <= 17]
+
+  let rocky count turtles-on patches with [pycor = 18 and pxcor <= 0 and pxcor >= -10]
+  let i'm count turtles-on patches with [pycor = -8 and pxcor >= 5 and pxcor <= 10 ]
+  let daanan count turtles-on patches with [pycor = -8 and pxcor >= -17 and pxcor <= -10]
+  let kalsada count turtles-on patches with [pycor = -18 and pxcor <= 18 and pxcor >= 0]
+
+
+  ;; setting capacities
+  set main-cap 1 - (main / 50) / 2
+  set tin-cap 1 -(tin / 30) / 2
+  set road-cap 1 -(road / 30)
+  set jupiter-cap 1 -(jupiter / 30) / 2
+  set saturn-cap 1 -(saturn / 30) / 2
+  set bugoy-cap 1 -(bugoy / 30) / 2
+  set uno-cap 1 -(uno / 50) / 2
+  set tingo-cap 1 -(tingo / 30) / 2
+  set rocky-cap 1 -(rocky / 30) / 2
+  set i'm-cap 1 -(i'm / 30) / 2
+  set daanan-cap 1 -(daanan / 30) / 2
+  set kalsada-cap 1 -(kalsada / 30) / 2
+
+  output-print main-cap
+end
+
+to set-car-accel
+  ask turtles [
+    set accel-mult 1
+  ]
+
+  ask turtles with [pxcor = 0][
+    set accel-mult main-cap
+  ]
+
+  ask turtles with [pxcor = -10 and pycor <= 17 and pycor >= -8][
+    set accel-mult tin-cap
+  ]
+
+  ask turtles with [pxcor = -18 and pycor <= 8  and pycor >= -8][
+    set accel-mult road-cap
+  ]
+
+  ask turtles with [pxcor = 10 and pycor <= 8 and pycor >= -17][
+    set accel-mult jupiter-cap
+  ]
+
+  ask turtles with [pxcor = 18 and pycor <= 8 and pycor >= -17][
+    set accel-mult saturn-cap
+  ]
+
+  ask turtles with [pxcor = 5 and pycor <= 8  and pycor >= -8][
+    set accel-mult bugoy-cap
+  ]
+
+  ask turtles with [pycor = 0 and pxcor <= 17 and pxcor >= -17][
+    set accel-mult uno-cap
+  ]
+
+  ask turtles with [pycor = 8 and pxcor >= -17 and pxcor <= 17][
+    set accel-mult tingo-cap
+  ]
+
+  ask turtles with [pycor = 18 and pxcor <= 0 and pxcor >= -10][
+    set accel-mult rocky-cap
+  ]
+
+  ask turtles with [pycor = -8 and pxcor >= 5 and pxcor <= 10 ][
+    set accel-mult i'm-cap
+  ]
+
+  ask turtles with [pycor = -8 and pxcor >= -17 and pxcor <= -10][
+    set accel-mult daanan-cap
+  ]
+
+  ask turtles with [pycor = -18 and pxcor <= 18 and pxcor >= 0][
+    set accel-mult kalsada-cap
+  ]
+
+end
+
 
 to choose-current
   if mouse-down? [
@@ -529,7 +602,9 @@ end
 to speed-up  ;; turtle procedure
   ifelse speed > speed-limit
     [ set speed speed-limit ]
-    [ set speed speed + acceleration ]
+    [ set speed speed + (acceleration * accel-mult) ]
+  if speed < 0
+    [ set speed 0 ]
 end
 
 ;; set the color of the car to a different color based on how fast the car is moving
@@ -808,7 +883,7 @@ num-cars
 num-cars
 1
 400
-142.0
+100.0
 1
 1
 NIL
@@ -1045,7 +1120,7 @@ assisted
 assisted
 0
 1
-1.0
+0.0
 .1
 1
 NIL
@@ -1086,8 +1161,8 @@ CHOOSER
 80
 app-suggestion
 app-suggestion
-"Main Road" "Uno Road" "Jupiter Street" "Saturn Street" "Bugoy Road" "Tingo Road" "Tin Road"
-1
+"Rand Street" "Wilensky Street" "Circumferential Road North" "Circumferential Road South"
+0
 
 MONITOR
 885
@@ -1214,9 +1289,9 @@ Main Road
 
 TEXTBOX
 425
-180
+195
 575
-198
+213
 Uno Road
 10
 0.0
@@ -1224,9 +1299,9 @@ Uno Road
 
 TEXTBOX
 590
-110
+95
 740
-128
+113
 Tingo Road
 9
 0.0
@@ -1308,9 +1383,9 @@ PENS
 
 TEXTBOX
 350
-65
+50
 395
-83
+68
 Tin Road
 10
 0.0
@@ -1361,6 +1436,63 @@ false
 "" ""
 PENS
 "default" 1.0 0 -16777216 true "" "plot count turtles with [ [pxcor] of patch-here = 5 ]"
+
+TEXTBOX
+315
+155
+465
+173
+Road Street 
+10
+0.0
+1
+
+TEXTBOX
+510
+330
+660
+348
+Kalsada Road
+10
+0.0
+1
+
+TEXTBOX
+335
+265
+485
+283
+Daanan Avenue
+10
+0.0
+1
+
+TEXTBOX
+420
+30
+570
+48
+Rocky Road
+10
+0.0
+1
+
+TEXTBOX
+530
+265
+680
+283
+I'm a road
+10
+0.0
+1
+
+OUTPUT
+1050
+40
+1290
+94
+10
 
 @#$#@#$#@
 ## ACKNOWLEDGMENT
