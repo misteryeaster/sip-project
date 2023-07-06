@@ -1118,8 +1118,8 @@ PLOT
 990
 510
 Main Road
-Number of cars
 Time
+Number of cars
 0.0
 10.0
 0.0
@@ -1146,8 +1146,8 @@ PLOT
 1310
 510
 Uno Road
-Number of cars
 Time
+Number of cars
 0.0
 10.0
 0.0
@@ -1194,8 +1194,8 @@ PLOT
 990
 695
 Tingo Road
-NIL
-NIL
+Time
+Number of cars
 0.0
 10.0
 0.0
@@ -1232,8 +1232,8 @@ PLOT
 1310
 695
 Saturn Street
-NIL
-NIL
+Time
+Number of cars
 0.0
 10.0
 0.0
@@ -1250,8 +1250,8 @@ PLOT
 1630
 510
 Tin Road
-NIL
-NIL
+Time
+Number of cars
 0.0
 10.0
 0.0
@@ -1288,8 +1288,8 @@ PLOT
 1630
 695
 Bugoy Road
-NIL
-NIL
+Number of cars
+Time
 0.0
 10.0
 0.0
@@ -1306,8 +1306,8 @@ PLOT
 990
 880
 Jupiter Street
-NIL
-NIL
+Time
+Number of cars
 0.0
 10.0
 0.0
