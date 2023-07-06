@@ -1288,8 +1288,8 @@ PLOT
 1630
 695
 Bugoy Road
-Number of cars
 Time
+Number of Cars
 0.0
 10.0
 0.0
