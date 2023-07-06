@@ -170,65 +170,7 @@ to setup-globals
 ;  table:put suggestions-house "Circumferential Road North" patch 18 18
 ;  table:put suggestions-house "Circumferential Road South" patch 18 -18
 
-  ;; Upper residential
-  if app-suggestion = "Main Road" [
-    set suggestion-house patch 0 4
-    set suggestion-work patch 0 4
-  ]
-  if app-suggestion = "Uno Road" [
-    set suggestion-house patch -4 0
-    set suggestion-work patch -4 0
-  ]
-  if app-suggestion = "Jupiter Street" [
-    set suggestion-house patch 5 4
-    set suggestion-work patch 5 3
-  ]
-  if app-suggestion = "Saturn Street" [
-    set suggestion-house patch 10 4
-    set suggestion-work patch 10 3
-  ]
-  if app-suggestion = "Tingo Road" [
-    set suggestion-house patch -4 8
-    set suggestion-work patch -4 8
-  ]
-  if app-suggestion = "Tin Road" [
-    set suggestion-house patch -10 12
-    set suggestion-work patch -10 12
-  ]
-  if app-suggestion = "Bugoy Road" [
-    set suggestion-house patch 18 4
-    set suggestion-work patch 18 4
-  ]
 
-  ;; Lower residential
-  if app-suggestion = "Main Road" [
-    set suggestion-house patch 0 0
-    set suggestion-work patch 0 0
-  ]
-  if app-suggestion = "Uno Road" [
-    set suggestion-house patch -10 0
-    set suggestion-work patch -10 0
-  ]
-  if app-suggestion = "Jupiter Street" [
-    set suggestion-house patch 5 1
-    set suggestion-work patch 5 -1
-  ]
-  if app-suggestion = "Saturn Street" [
-    set suggestion-house patch 10 -1
-    set suggestion-work patch 10 1
-  ]
-  if app-suggestion = "Tingo Road" [
-    set suggestion-house patch 10 8
-    set suggestion-work patch 10 8
-  ]
-  if app-suggestion = "Tin Road" [
-    set suggestion-house patch -10 4
-    set suggestion-work patch -10 4
-  ]
-  if app-suggestion = "Bugoy Road" [
-    set suggestion-house patch 18 -16
-    set suggestion-work patch 18 -16
-  ]
 
   ;; don't make acceleration 0.1 since we could get a rounding error and end up on a patch boundary
   set acceleration 0.099
